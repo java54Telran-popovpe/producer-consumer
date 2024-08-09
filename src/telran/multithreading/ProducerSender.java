@@ -1,25 +1,26 @@
 package telran.multithreading;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.IntStream;
 
 public class ProducerSender extends Thread {
-	private BlockingQueue<String> messageBox;
+	private List<BlockingQueue<String>> messageBoxes;
 	private int nMessages;
 	
-	public ProducerSender(BlockingQueue<String> messageBox, int nMessages) {
-		this.messageBox = messageBox;
+
+	public ProducerSender(List<BlockingQueue<String>> messageBoxes, int nMessages) {
+		this.messageBoxes = messageBoxes;
 		this.nMessages = nMessages;
 	}
-	
-	
+
 	@Override
 	public void run() {
 		IntStream.rangeClosed(1, nMessages)
-			.mapToObj( i -> "message" + i )
-			.forEach( m -> {
+			.forEach( i -> {
 				try {
-					messageBox.put(m);
+					messageBoxes.get( i % 2 ).put("message" + i);
 				} catch (InterruptedException e) {
 					
 				}
